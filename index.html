@@ -3,7 +3,14 @@
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+      <script src="https://code.angularjs.org/1.4.3/angular.js"></script>
+      <script src="app.js"></script>
+      <script src="listingController.js"></script>
+      <script src="listingFactory.js"></script>
   </head>
+
   <body ng-app="directoryApp">
     <div class="container">
       <div class="row">
@@ -33,14 +40,32 @@
                       * populate the rows with the code and name of each listing
                       * include a way to remove individual listings
 
-                --> 
+                -->
+              <tr ng-repeat="entry in listings">
+                <td>{{ entry.code }}</td>
+                  <td>{{ entry.name }}</td>
+              </tr>
             </table>
+            <button ng-click="$scope.deleteListing"> - </button>
           </div>
           <!-- 
 
               Write an HTML form that adds new listings to the directory 
 
             -->
+            <form action="~/listingFactory.js">
+                <header>Add a Building</header>
+                code:<br>
+                <input type="text" name="code" placeholder="XXX"><br>
+                name:<br>
+                <input type="text" name="name" placeholder="New Building"><br>
+                coordinates:<br>
+                <input type="text" name="coordinates.latitude" placeholder="latitude"><br>
+                <input type="text" name="coordinate.longitude" placeholder="longitude"><br>
+                address:<br>
+                <input type="text" name="address" placeholder="1234 NE 567 St Gainesville, Fl 32601">
+                <input type="submit" value="Submit">
+            </form>
         </div>
         <div class="col-md-6">
           <div class="jumbotron">
@@ -55,11 +80,6 @@
         </div>
       </div>
     </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
-    <script src="https://code.angularjs.org/1.4.3/angular.js"></script>
-    <script src="app.js"></script>
-    <script src="listingController.js"></script>
-    <script src="listingFactory.js"></script>
+
   </body>
 </html>
