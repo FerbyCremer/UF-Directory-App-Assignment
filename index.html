@@ -3,12 +3,10 @@
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
-      <script src="https://code.angularjs.org/1.4.3/angular.js"></script>
-      <script src="app.js"></script>
-      <script src="listingController.js"></script>
-      <script src="listingFactory.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+    <script src="https://code.angularjs.org/1.4.3/angular.js"></script>
+    <script src="https://code.angularjs.org/1.4.3/angular-animate.js"></script>
   </head>
 
   <body ng-app="directoryApp">
@@ -17,15 +15,10 @@
         <h1>UF Directory App</h1>
       </div>
       <div class="row" ng-controller="ListingsController">
-        <div class="col-md-6">
+        <div class="col-md-6" ng-if="!showForm">
           <div class="input-group" id="searchBar">
-            <!-- 
-
-                Implement a way to filter through listings using the search bar 
-
-              -->
             <span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-search"></span></span>
-            <input type="text" class="form-control" placeholder="Search">
+            <input type="text" class="form-control" placeholder="Search" ng-model="q">
           </div>
           <div class="tableWrapper">
             <table class="table table-striped table-hover">
@@ -34,52 +27,77 @@
                 <th>Building Name</th>
                 <th></th>
               </tr>
-              <!-- 
-
-                  Fill in the rest of the table:
-                      * populate the rows with the code and name of each listing
-                      * include a way to remove individual listings
-
-                -->
-              <tr ng-repeat="entry in listings">
+              <tr class="animate-repeat" ng-repeat="entry in listings | filter:q as results" ng-click="detailedInfo = showDetails(entry)">
                 <td>{{ entry.code }}</td>
-                  <td>{{ entry.name }}</td>
+                <td>{{ entry.name }}</td>
+                <td>
+                  <button ng-click="deleteListing(entry)" class="btn btn-primary">Delete</button>
+                </td>
               </tr>
             </table>
-            <button ng-click="$scope.deleteListing"> - </button>
           </div>
           <!-- 
 
               Write an HTML form that adds new listings to the directory 
 
             -->
-            <form action="~/listingFactory.js">
-                <header>Add a Building</header>
-                code:<br>
-                <input type="text" name="code" placeholder="XXX"><br>
-                name:<br>
-                <input type="text" name="name" placeholder="New Building"><br>
-                coordinates:<br>
-                <input type="text" name="coordinates.latitude" placeholder="latitude"><br>
-                <input type="text" name="coordinate.longitude" placeholder="longitude"><br>
-                address:<br>
-                <input type="text" name="address" placeholder="1234 NE 567 St Gainesville, Fl 32601">
-                <input type="submit" value="Submit">
-            </form>
+          <div ng-if="!showForm" class="pull-left">
+            <button ng-click="changeForm()" class="btn btn-primary">Add New Building</button>
+          </div>
         </div>
-        <div class="col-md-6">
-          <div class="jumbotron">
+        <div ng-if="showForm">
+          <form name="listingFormData" ng-submit="addListing()">
+            <h2>Add a New Building Entry</h2>
+            <div class="form-group">
+              <label for="code">Code</label>
+              <input id="code" class="form-control" ng-model="form.code" type="text" placeholder="Enter Code... " required>
+            </div>
+            <div class="form-group">
+              <label for="code">Name</label>
+              <input id="name" class="form-control" ng-model="form.name" type="text" placeholder="Building Name..." required>
+            </div>
+            <div class="form-group">
+              <label for="address">Address</label>
+              <textarea id="address" class="form-control"  ng-model="form.address" type="text" placeholder="Enter an address..." /></textarea>
+              <div class="form-group">
+                <h3>Coordinates</h3>
+                <label for="latitude">Latitude</label>
+                <input id="latitude" class="form-control"  ng-model="form.coordinates.latitude" type="text" placeholder="Enter a latitude...">
+                <label for="longitude">Longitude</label>
+                <input id="longitude" class="form-control"  ng-model="form.coordinates.longitude" type="text" placeholder="Enter a longitude...">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="col-md-6" ng-if="!showForm">
+          <div ng-if="detailedInfo !== undefined" class="jumbotron">
             <h2>Detailed Information</h2>
-            <!-- 
-
-              Include a way to display detailed information about an individual listing:
-                   * consider how to use ng-click within the the table to implement this feature
-
-             -->
+            <div class="row">
+              <div class="col-md-12">
+                <dl class='detailed-info dl-horizontal'>
+                  <dt>Code</dt>
+                  <dd>{{detailedInfo.code}}</dd>
+                  <dt>Name</dt>
+                  <dd>{{detailedInfo.name}}</dd>
+                  <dt ng-if="detailedInfo.address !== undefined">Address</dt>
+                  <dd ng-if="detailedInfo.address !== undefined">{{detailedInfo.address}}</dd>
+                  <dt ng-if="detailedInfo.coordinates.longitude !== undefined">Longitude</dt>
+                  <dd ng-if="detailedInfo.coordinates.longitude !== undefined">{{detailedInfo.coordinates.longitude}}</dd>
+                  <dt ng-if="detailedInfo.coordinates.latitude !== undefined">Latitude</dt>
+                  <dd ng-if="detailedInfo.coordinates.latitude !== undefined">{{detailedInfo.coordinates.latitude}}</dd>
+                </dl>
+              </div>
+            </div>
+          </div>
+          <div ng-if="detailedInfo === undefined" class="jumbotron">
+            <h3>Click on a row in the UF Directory App to see more info about that listing</h3>
           </div>
         </div>
       </div>
     </div>
-
+    <script src="app.js"></script>
+    <script src="listingController.js"></script>
+    <script src="listingFactory.js"></script>
   </body>
 </html>
