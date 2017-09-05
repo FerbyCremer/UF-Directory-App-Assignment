@@ -12,7 +12,16 @@
   <body ng-app="directoryApp">
     <div class="container">
       <div class="row">
-        <h1>UF Directory App</h1>
+        <div class="page-header">
+          <div class="media">
+            <div class="media-left">
+              <a href="#">
+                <img class="media-object" src="uf_logo_full.png">
+              </a>
+            </div>
+          </div>
+          <h1>UF Directory App</h1>
+        </div>
       </div>
       <div class="row" ng-controller="ListingsController">
         <div class="col-md-6" ng-if="!showForm">
@@ -31,7 +40,9 @@
                 <td>{{ entry.code }}</td>
                 <td>{{ entry.name }}</td>
                 <td>
-                  <button ng-click="deleteListing(entry)" class="btn btn-primary">Delete</button>
+                  <button ng-click="deleteListing(entry)" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-trash"></span>
+                  </button>
                 </td>
               </tr>
             </table>
