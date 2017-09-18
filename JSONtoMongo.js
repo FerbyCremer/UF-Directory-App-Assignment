@@ -15,7 +15,7 @@ var data = JSON.parse(data);
     var lines = new Listing({
                      code: line.code,
                      name: line.name,
-                     coordinates: (line.latitude, line.longitude),
+                     coordinates: line.coordinates,
                      address: line.address
                    });
 
